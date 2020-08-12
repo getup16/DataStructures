@@ -19,7 +19,7 @@ public:
     //destructor
     ~Node()
     {
-        cout<<"\nDestroying Node ; Data = "<<this->data;
+        cout<<"Destroying Node ; Data = "<<this->data<<"\n";
         this->nextNode = 0;
     }
 };
@@ -30,12 +30,14 @@ class SinglyLinkedList
 private:
     //data members
     Node *head,*tail,*temp;
+    int totalNodes;
 public:
     //constructor
     SinglyLinkedList()
     {
         //initializing the head and tail pointers of Linked List to Null Pointer
         head = tail = 0;
+        totalNodes = 0;
     }
     //destructor
     ~SinglyLinkedList()
@@ -85,13 +87,147 @@ void SinglyLinkedList :: create()
             tail = temp;        
         }
         temp = 0;
-        
+        totalNodes++;
         //asking user if they want to add more Nodes
         cout<<"Do you want to add more Nodes?  (y/n): ";
         cin>>flag;
 
     } while (flag == 'y');
 
+}
+
+//insert at beginnig
+void SinglyLinkedList :: insertAtBegin()
+{
+    //creating a new Node Object
+    temp = new Node();
+    cout<<"Enter the Data of New Node : "; 
+    cin>>temp->data;
+    temp->nextNode = 0;
+    if(head != 0)
+    {
+        temp->nextNode = head;
+        head = temp;
+    }
+    else
+    {
+        head = tail = temp;
+    }
+    temp = 0;
+    totalNodes++;
+}
+
+//insert at beginnig
+void SinglyLinkedList :: insertAtEnd()
+{
+    //creating a new Node Object
+    temp = new Node();
+    cout<<"Enter the Data of New Node : "; 
+    cin>>temp->data;
+    temp->nextNode = 0;
+    if(tail != 0)
+    {
+        tail->nextNode = temp;
+        tail = temp;
+    }
+    else
+    {
+        head = tail = temp;
+    }
+    temp = 0;
+    totalNodes++;
+}
+
+//insert a node at n-th position
+void SinglyLinkedList :: insertAtLoc()
+{
+    //creating a new Node Object
+    temp = new Node();
+    cout<<"Enter the Data of New Node : "; 
+    cin>>temp->data;
+    temp->nextNode = 0;
+    //taking location input
+    int loc;
+    cout<<"Enter the location you want to enter the Node : ";
+    cin>>loc;
+    if(loc < 0 || loc > totalNodes)
+    {
+        cout<<"Invalid Location\n";
+    }
+    else if(loc == 1)
+    {
+        temp->nextNode = head;
+        head = temp;
+        totalNodes++;
+
+    }
+    else
+    {
+        int counter = 1;
+        Node *requiredNode = head;
+        //traversing to the Node of given location
+        while(counter != (loc-1))
+        {
+            requiredNode = requiredNode->nextNode;
+            counter++;
+        }
+        //linking the "temp" Node in the linked list at the asked "loc"
+        temp->nextNode = requiredNode->nextNode;
+        requiredNode->nextNode = temp;
+        totalNodes++;
+    }
+    temp = 0;
+    
+}
+
+//delete at beginning
+void SinglyLinkedList :: deleteAtBegin()
+{
+    if(totalNodes > 0)
+    {
+        temp = head;
+        head = head->nextNode;
+        delete temp;
+        temp = 0;
+        totalNodes--;
+    }
+    else
+    {
+        cout<<"Invalid\n";
+    }
+    
+}
+
+//delete at end
+void SinglyLinkedList :: deleteAtEnd()
+{
+    if(totalNodes > 0)
+    {
+        if(head == tail)
+        {
+            delete head;
+            head = tail = temp = 0;
+        }
+        else
+        {
+                    
+            temp = head;
+            while (temp->nextNode != tail)
+            {
+                temp = temp->nextNode;
+            }
+            delete tail;
+            temp->nextNode = 0;
+            tail = temp;
+            temp = 0;
+            totalNodes--;
+        }
+    }
+    else
+    {
+        cout<<"Invalid\n";
+    }
+    
 }
 
 //traverse function
@@ -123,7 +259,7 @@ int main()
     int choice;
     //menu
     do{
-        system("CLS");
+        // system("CLS");
         cout<<setw(20)<<setfill(' ')<<"LINKED LIST\n";
         cout<<setw(30)<<setfill('-')<<"\n";
         cout<<"Linked List -> ";A->traverse();
@@ -146,14 +282,19 @@ int main()
                 A->create();
                 break;
             case 2:
+                A->insertAtBegin();
                 break;
             case 3:
+                A->insertAtEnd();
                 break;
             case 4:
+                A->insertAtLoc();
                 break;
             case 5:
+                A->deleteAtBegin();
                 break;
             case 6:
+                A->deleteAtEnd();
                 break;
             case 7:
                 break;
