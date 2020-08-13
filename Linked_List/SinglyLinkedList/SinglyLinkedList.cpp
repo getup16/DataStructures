@@ -45,7 +45,7 @@ public:
         system("CLS");
         temp = head;
         Node *nextNodePtr;
-        cout<<"Destroying The List";
+        cout<<"Destroying The List\n";
         while(temp != 0)
         {
             nextNodePtr = temp->nextNode;
@@ -55,45 +55,56 @@ public:
         cout<<"\nDone.\n";
     }
     //member functions
-    void create();
     void insertAtEnd();
     void insertAtBegin();
     void insertAtLoc();
     void deleteAtEnd();
     void deleteAtBegin();
     void deleteAtLoc();
-    void traverse();    //to print the output
+    void traverse();    //to display the list
+    void search();
+    int isEmpty();
+    void reverse();
 };
 
-//create function
-void SinglyLinkedList :: create()
+
+//isEmpty Function
+int SinglyLinkedList :: isEmpty()
 {
-    char flag = 'y';
-    do
+    if(totalNodes == 0)
     {
-        //creating the temp Node object
-        temp = new Node();
-        cout<<"Enter the Data of New Node : "; 
-        cin>>temp->data;
-        temp->nextNode = 0;
-        //adding the new Node accordingly
-        if(head == 0)
-        {
-            head = tail = temp;
-        }
-        else
-        {
-            tail->nextNode = temp;
-            tail = temp;        
-        }
-        temp = 0;
-        totalNodes++;
-        //asking user if they want to add more Nodes
-        cout<<"Do you want to add more Nodes?  (y/n): ";
-        cin>>flag;
+        return 0;
+    }
+    return totalNodes;
+}
 
-    } while (flag == 'y');
-
+//search function
+void SinglyLinkedList :: search()
+{
+    if(isEmpty())
+    {
+        //getting data value from User
+        int query;
+        int counter = 1;
+        cout<<"Enter the data (*type - 'int') you want to Search : ";
+        cin>>query;
+        temp = head;
+        while(temp != 0)
+        {
+            if(temp->data == query)
+            {
+                cout<<"Found @ Index - "<<counter<<"\n";
+                return;
+            }
+            temp = temp->nextNode;
+            counter++;
+        }
+    }
+    else
+    {
+        cout<<"List Is Empty\n";
+    }
+    
 }
 
 //insert at beginnig
@@ -117,7 +128,7 @@ void SinglyLinkedList :: insertAtBegin()
     totalNodes++;
 }
 
-//insert at beginnig
+//insert at end
 void SinglyLinkedList :: insertAtEnd()
 {
     //creating a new Node Object
@@ -125,7 +136,7 @@ void SinglyLinkedList :: insertAtEnd()
     cout<<"Enter the Data of New Node : "; 
     cin>>temp->data;
     temp->nextNode = 0;
-    if(tail != 0)
+    if(head != 0)
     {
         tail->nextNode = temp;
         tail = temp;
@@ -159,7 +170,6 @@ void SinglyLinkedList :: insertAtLoc()
         temp->nextNode = head;
         head = temp;
         totalNodes++;
-
     }
     else
     {
@@ -209,8 +219,7 @@ void SinglyLinkedList :: deleteAtEnd()
             head = tail = temp = 0;
         }
         else
-        {
-                    
+        {       
             temp = head;
             while (temp->nextNode != tail)
             {
@@ -226,6 +235,58 @@ void SinglyLinkedList :: deleteAtEnd()
     else
     {
         cout<<"Invalid\n";
+    }
+    
+}
+
+//delete at location
+void SinglyLinkedList :: deleteAtLoc()
+{
+    //taking location input
+    int loc;
+    cout<<"Enter the location you want to enter the Node : ";
+    cin>>loc;
+    if(loc < 0 || loc > totalNodes)
+    {
+        cout<<"Invalid Location\n";
+    }
+    else if(loc == 1)
+    {
+        temp = head;
+        if(totalNodes == 1)
+        {
+            head = tail = 0;
+        }
+        else
+        {
+            head = head->nextNode;
+        }
+        delete temp;
+        temp = 0;
+        totalNodes--;
+        
+    }
+    else
+    {
+        int counter = 1;
+        Node *requiredNode = head;
+        //traversing to the Node of given location
+        while(counter != (loc-1))
+        {
+            requiredNode = requiredNode->nextNode;
+            counter++;
+        }
+        temp = requiredNode->nextNode;
+        requiredNode->nextNode = temp->nextNode;
+        //checking if the entered location is a tail
+        if(temp == tail)
+        {
+            tail = requiredNode;
+            requiredNode->nextNode = 0;
+        }
+        delete temp;
+        temp = 0;
+        totalNodes--; 
     }
     
 }
@@ -251,6 +312,23 @@ void SinglyLinkedList :: traverse()
     
 }
 
+//reverse the linked list
+void SinglyLinkedList :: reverse()
+{
+    temp = head;
+    Node *previous = 0;
+    Node *next = 0;
+    while(temp != 0)
+    {
+        next = temp->nextNode;
+        temp->nextNode = previous;
+        previous = temp;
+        temp = next;  
+    }
+    tail = head;
+    head = previous;
+    temp = 0;
+}
 
 int main()
 {
@@ -262,7 +340,7 @@ int main()
         // system("CLS");
         cout<<setw(20)<<setfill(' ')<<"LINKED LIST\n";
         cout<<setw(30)<<setfill('-')<<"\n";
-        cout<<"Linked List -> ";A->traverse();
+        cout<<"List -> ";A->traverse();
         cout<<setw(30)<<setfill('-')<<"\n";
         cout<<"1. Create \n"
             <<"2. Insert a Node at the Beginning\n"
@@ -271,7 +349,9 @@ int main()
             <<"5. Delete a Node at the Beginning\n"
             <<"6. Delete a Node at the End\n"
             <<"7. Delete a Node at a Certain Location\n"
-            <<"8.Exit\n";
+            <<"8. Display Count\n"
+            <<"9. Reverse Linked List\n"
+            <<"10. Exit\n";
         //getting user input
         cout<<"Enter What you want to do ? : ";
         cin>>choice;
@@ -279,7 +359,7 @@ int main()
         switch (choice)
         {
             case 1:
-                A->create();
+                A->search();
                 break;
             case 2:
                 A->insertAtBegin();
@@ -297,8 +377,15 @@ int main()
                 A->deleteAtEnd();
                 break;
             case 7:
+                A->deleteAtLoc();
                 break;
             case 8:
+                cout<<A->isEmpty()<<"\n";
+                break;
+            case 9:
+                A->reverse();
+                break;
+            case 10:
                 flag = 'n';
                 break;
             default:
