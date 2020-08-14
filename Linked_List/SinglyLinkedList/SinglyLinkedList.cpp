@@ -20,7 +20,6 @@ public:
     ~Node()
     {
         cout<<"Destroying Node ; Data = "<<this->data<<"\n";
-        this->nextNode = 0;
     }
 };
 
@@ -36,7 +35,7 @@ public:
     SinglyLinkedList()
     {
         //initializing the head and tail pointers of Linked List to Null Pointer
-        head = tail = 0;
+        head = tail = temp = 0;
         totalNodes = 0;
     }
     //destructor
@@ -159,7 +158,7 @@ void SinglyLinkedList :: insertAtLoc()
     temp->nextNode = 0;
     //taking location input
     int loc;
-    cout<<"Enter the location you want to enter the Node : ";
+    cout<<"Enter Location : ";
     cin>>loc;
     if(loc < 0 || loc > totalNodes)
     {
@@ -217,6 +216,7 @@ void SinglyLinkedList :: deleteAtEnd()
         {
             delete head;
             head = tail = temp = 0;
+            totalNodes--;
         }
         else
         {       
@@ -296,7 +296,7 @@ void SinglyLinkedList :: traverse()
 {
     if(head == 0)
     {
-        cout<<"List is EMPTY.\n";
+        cout<<"EMPTY.\n";
     }
     else
     {
@@ -342,7 +342,7 @@ int main()
         cout<<setw(30)<<setfill('-')<<"\n";
         cout<<"List -> ";A->traverse();
         cout<<setw(30)<<setfill('-')<<"\n";
-        cout<<"1. Create \n"
+        cout<<"1. Search \n"
             <<"2. Insert a Node at the Beginning\n"
             <<"3. Insert a Node at the End\n"
             <<"4. Insert a Node at a Certain Location\n"
