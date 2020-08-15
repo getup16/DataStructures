@@ -55,15 +55,15 @@ public:
         cout<<"\nDone.\n";
     }
     //member functions
-    void insertAtEnd();
+    int isEmpty();
     void insertAtBegin();
+    void insertAtEnd();
     void insertAtLoc();
-    void deleteAtEnd();
     void deleteAtBegin();
+    void deleteAtEnd();
     void deleteAtLoc();
     void traverse();    //to display the list
     void search();
-    int isEmpty();
     void reverse();
 };
 
@@ -281,9 +281,59 @@ void DoublyLinkedList :: traverse()
     }   
 }
 
+//search function
+void DoublyLinkedList :: search()
+{
+    if(isEmpty())
+    {
+        //query from user
+        int query;
+        cout<<"Enter the Element You want to Search"; cin>>query;
+        temp = head;
+        int counter = 1;
+        while(temp != 0)
+        {
+            if(temp->data == query)
+            {
+                cout<<"Found at Index : "<<counter<<"\n";
+                return; 
+            }
+            temp = temp->nextNode;
+            counter++;
+        }
+        cout<<"Not Found\n";
+    }
+    else
+    {
+        cout<<"List Is Empty\n";
+    }
+}
 
-
-
+//reverse function
+void DoublyLinkedList :: reverse()
+{
+    if(isEmpty())
+    {
+        temp = head;
+        Node *next = 0; //node to store next Node pointer
+        while(temp != 0)
+        {
+            next = temp->nextNode;
+            temp->nextNode = temp->prevNode;
+            temp->prevNode = next;
+            temp = next;
+        }
+        temp = tail;
+        tail = head;
+        head = temp;
+        temp = 0;
+    }
+    else
+    {
+        cout<<"The List is EMPTY\n";
+    }
+     
+}
 
 
 int main()
@@ -315,7 +365,7 @@ int main()
         switch (choice)
         {
             case 1:
-                // A->search();
+                A->search();
                 break;
             case 2:
                 A->insertAtBegin();
@@ -339,7 +389,7 @@ int main()
                 cout<<A->isEmpty()<<"\n";
                 break;
             case 9:
-                // A->reverse();
+                A->reverse();
                 break;
             case 10:
                 flag = 'n';

@@ -98,6 +98,7 @@ void SinglyLinkedList :: search()
             temp = temp->nextNode;
             counter++;
         }
+        cout<<"Not Found\n";
     }
     else
     {
@@ -315,19 +316,27 @@ void SinglyLinkedList :: traverse()
 //reverse the linked list
 void SinglyLinkedList :: reverse()
 {
-    temp = head;
-    Node *previous = 0;
-    Node *next = 0;
-    while(temp != 0)
+    if (isEmpty())
     {
-        next = temp->nextNode;
-        temp->nextNode = previous;
-        previous = temp;
-        temp = next;  
+        temp = head;
+        Node *previous = 0;
+        Node *next = 0;
+        while(temp != 0)
+        {
+            next = temp->nextNode;
+            temp->nextNode = previous;
+            previous = temp;
+            temp = next;  
+        }
+        tail = head;
+        head = previous;
+        temp = 0;
     }
-    tail = head;
-    head = previous;
-    temp = 0;
+    else
+    {
+        cout<<"The List is EMPTY\n";
+    }
+    
 }
 
 int main()
