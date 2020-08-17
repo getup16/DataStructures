@@ -2,42 +2,43 @@
 #include <iomanip>
 using namespace std;
 
-//Node Class
+//Node class
 class Node
 {
 public:
-    //data memebers
+    //data members
     int data;
     Node* nextNode;
+    Node* prevNode;
     //constructor
-    Node(int data = 0, Node* nextNode = 0)
+    Node(int data = 0, Node* nextNode = 0, Node* prevNode = 0)
     {
         this->data = data;
         this->nextNode = nextNode;
+        this->prevNode = prevNode;
     }
     //destructor
     ~Node()
     {
         cout<<"Destroying Node ; Data = "<<this->data<<"\n";
     }
-
 };
 
-//Circular Singly Linked List
-class CirSinglyLinkedList
+//Circular Doubly Linked List Class
+class CirDoublyLinkedList
 {
 private:
     int totalNodes;
-    Node *head,*temp; 
+    Node *head,*temp;
 public:
     //constructor
-    CirSinglyLinkedList()
+    CirDoublyLinkedList()
     {
-        head = temp = 0;
         totalNodes = 0;
+        head = temp = 0;
     }
     //destructor
-    ~CirSinglyLinkedList()
+    ~CirDoublyLinkedList()
     {
         system("CLS");
         temp = head;
@@ -52,6 +53,7 @@ public:
         delete temp;
         cout<<"\nDone.\n";
     }
+
     //member functions
     void search();
     void insertAtBegin();
@@ -63,100 +65,90 @@ public:
     void traverse();
     int isEmpty();
 };
+
 //search function
-void CirSinglyLinkedList :: search()
+void CirDoublyLinkedList :: search()
 {
     if(isEmpty())
     {
-        //getting data value from User
-        int query;
-        int counter = 1;
-        cout<<"Enter the data (*type - 'int') you want to Search : ";
-        cin>>query;
+        //taking input from user
+        int query = 0;
+        cout<<"Enter the data (*type - 'int') you want to Search : "; cin>>query;
+        //searching for the element
         temp = head;
+        int counter = 1;
         do
         {
             if(temp->data == query)
             {
-                cout<<"Found @ Index - "<<counter<<"\n";
+                cout<<"Data found @ "<<counter<<" index\n";
                 return;
             }
             temp = temp->nextNode;
             counter++;
-        }while(temp != head);
-        cout<<"Not Found\n";
+        }while (temp != head);
+        cout<<"Data not found :/ \n";
     }
     else
     {
-        cout<<"List Is Empty\n";
+        cout<<"List is Empty\n";
     }
+}
+
+//insert the Node at the beginning of the List
+void CirDoublyLinkedList :: insertAtBegin()
+{
+    //taking input from the user
+    temp = new Node();
+    cout<<"Enter the Data of New Node : ";
+    cin>>temp->data;
+    //inserting the node
+    if(head == 0)
+    {
+        head = temp;
+        head->nextNode = head;
+        head->prevNode = head;
+        temp = 0;
+    }
+    else
+    {
+        temp->nextNode = head;
+        temp->prevNode = head->prevNode;
+        head->prevNode->nextNode = temp;
+        head = temp;
+        temp = 0;
+    }
+    totalNodes++;
     
 }
 
-//insert at begin
-void CirSinglyLinkedList :: insertAtBegin()
+//insert the node at the end of the List
+void CirDoublyLinkedList :: insertAtEnd()
 {
     //taking input from the user
     temp = new Node();
     cout<<"Enter the Data of New Node : ";
     cin>>temp->data;
-    //checking for empty list
+    //inserting the node
     if(head == 0)
     {
         head = temp;
         head->nextNode = head;
+        head->prevNode = head;
         temp = 0;
     }
     else
     {
-        //getting the tail
-        Node *tail = head;
-        while(tail->nextNode != head)
-        {
-            tail = tail->nextNode;
-        }
-        //inserting the new node before head
         temp->nextNode = head;
-        //changing head and tail
-        head = temp;
-        tail->nextNode = head;
-        temp = tail = 0;
-    }
-    totalNodes++;  
-}
-
-//insert at end function
-void CirSinglyLinkedList :: insertAtEnd()
-{
-    //taking input from the user
-    temp = new Node();
-    cout<<"Enter the Data of New Node : ";
-    cin>>temp->data;
-    //checking for empty list
-    if(head == 0)
-    {
-        head = temp;
-        head->nextNode = head;
+        temp->prevNode = head->prevNode;
+        head->prevNode->nextNode = temp;
+        head->prevNode = temp;
         temp = 0;
-    }
-    else
-    {
-        //finding the tail of Linked List
-        Node* tail = head;
-        while(tail->nextNode != head)
-        {
-            tail = tail->nextNode;
-        }
-        //inserting the Node at the End
-        tail->nextNode = temp;
-        tail->nextNode->nextNode = head;
-        temp = tail = 0;
     }
     totalNodes++;
 }
-
-//insert at n-th location function
-void CirSinglyLinkedList :: insertAtLoc()
+//inserting a Node at the n-th position in List
+void CirDoublyLinkedList :: insertAtLoc()
 {
     //taking input from the user
     temp = new Node();
@@ -171,102 +163,94 @@ void CirSinglyLinkedList :: insertAtLoc()
     {
         cout<<"Invalid Location\n";
     }
-    else if(loc == 1)
-    {
-        Node* tail = head;
-        while(tail->nextNode != head)
-        {
-            tail = tail->nextNode;
-        }
-        temp->nextNode = head;
-        head = temp;
-        tail->nextNode = head;
-        tail = temp = 0;
-        totalNodes++;
-    }
     else
     {
-        int counter = 1;
-        Node* requiredNode = head;
-        while(counter != (loc-1))
+        if(loc == 1)
         {
-            requiredNode = requiredNode->nextNode;
-            counter++;
-        }
-        temp->nextNode = requiredNode->nextNode;
-        requiredNode->nextNode = temp;
-        requiredNode = temp = 0;
-        totalNodes++;
-    }
-}
-
-//delete at begin
-void CirSinglyLinkedList :: deleteAtBegin()
-{
-    if(totalNodes > 0)
-    {
-        if(head->nextNode == head)
-        {
-            temp = head;
-            delete temp;
-            head = temp = 0;
+            temp->nextNode = head;
+            temp->prevNode = head->prevNode;
+            head->prevNode->nextNode = temp;
+            head = temp;
+            temp = 0;  
         }
         else
         {
-            //get tail
-            Node* tail = head;
-            while(tail->nextNode != head)
-            {
-                tail = tail->nextNode;
-            }
-            temp = head;
-            head = head->nextNode;
-            tail->nextNode = head;
-            delete temp;
-            temp = 0;
-        }
-        totalNodes--;
-    }
-    else
-    {
-        cout<<"List is EMPTY\n";
-    }
-}
-
-//delete at the end
-void CirSinglyLinkedList :: deleteAtEnd()
-{
-    if(totalNodes > 0)
-    {
-        if(head->nextNode == head)
-        {
-            temp = head;
-            delete temp;
-            head = temp = 0;
-        }
-        else
-        {
-            //get that node behind the tail --->
-            temp = head;
-            while(temp->nextNode->nextNode != head)
+            int counter = 1;
+            Node* requiredNode = head;
+            while(counter != (loc-1))
             {
                 temp = temp->nextNode;
+                counter++;
             }
-            delete temp->nextNode;
-            temp->nextNode = head;
+            temp->nextNode = requiredNode->nextNode;
+            temp->prevNode = requiredNode;
+            requiredNode->nextNode->prevNode = temp;
+            requiredNode->nextNode = temp;
+        }
+        totalNodes++;
+    }
+}
+
+//delete at the beginning of list
+void CirDoublyLinkedList :: deleteAtBegin()
+{
+    if(totalNodes > 0)
+    {
+        if(totalNodes == 1)
+        {
+            temp = head;
+            delete temp;
+            head = temp = 0;
+        }
+        else
+        {
+            temp = head;
+            temp->nextNode->prevNode = temp->prevNode;
+            temp->prevNode->nextNode = temp->nextNode;
+            head = head->nextNode;
+            delete temp;
             temp = 0;
         }
         totalNodes--;
+        
     }
     else
     {
-        cout<<"List is EMPTY\n";
+        cout<<"The List is Empty\n";
     }
     
 }
 
-//delete the n-th location function
-void CirSinglyLinkedList :: deleteAtLoc()
+//delete a node at the end of the list 
+void CirDoublyLinkedList :: deleteAtEnd()
+{
+    if(totalNodes > 0)
+    {
+        if(totalNodes == 1)
+        {
+            temp = head;
+            delete temp;
+            head = temp = 0;
+        }
+        else
+        {
+            temp = head->prevNode;
+            temp->nextNode->prevNode = temp->prevNode;
+            temp->prevNode->nextNode = temp->nextNode; 
+            delete temp;
+            temp = 0;
+        }
+        totalNodes--;
+    }    
+    else
+    {
+        cout<<"List is Empty\n";
+    }
+    
+}
+
+//delete a node at the n-th location
+void CirDoublyLinkedList :: deleteAtLoc()
 {
     //taking location input
     int loc;
@@ -276,56 +260,50 @@ void CirSinglyLinkedList :: deleteAtLoc()
     {
         cout<<"Invalid Location\n";
     }
-    else if(loc == 1)
+    else
     {
-        temp = head;
-        //finding tail
-        Node* tail = head;
-        while (tail->nextNode != head)
+        if(loc == 1)
         {
-            tail = tail->nextNode;
-        }
-        //checking if the list has more than one item
-        if(totalNodes == 1)
-        {
-            head = 0;
+            temp = head;
+            if(totalNodes == 1)
+            {
+                head = 0;
+            }
+            else
+            {
+                temp->nextNode->prevNode = temp->prevNode;
+                temp->prevNode->nextNode = temp->nextNode;
+                head = head->nextNode;
+            }
+            delete temp;
+            temp = 0;
         }
         else
         {
-            head = head->nextNode;
-            tail->nextNode = head;
+            int counter = 1;
+            temp = head;
+            while(counter != loc)
+            {
+                temp = temp->nextNode;
+                counter++;
+            }
+            temp->prevNode->nextNode = temp->nextNode;
+            temp->nextNode->prevNode = temp->prevNode;
+            if(temp->nextNode == head)
+            {
+                head->prevNode = temp->prevNode;
+            }
+            delete temp;
+            temp = 0;
         }
-        delete temp;
-        totalNodes--;
-    }
-    else
-    {
-        int counter = 1;
-        Node* requiredNode = head;
-        while (counter != (loc-1))
-        {
-            requiredNode = requiredNode->nextNode;
-            counter++;
-        }
-        temp = requiredNode->nextNode;
-        //checking if the next node is tail or not
-        if(temp->nextNode == head)
-        {
-            requiredNode->nextNode = head;
-        }
-        requiredNode->nextNode = temp->nextNode;
-        delete temp;
-        temp = requiredNode = 0;
         totalNodes--;
     }
     
 }
 
 //traverse function
-void CirSinglyLinkedList :: traverse()
+void CirDoublyLinkedList :: traverse()
 {
-    //setting temp equal to head 
-    //checking whether the List is Empty or Not
     if(head == 0)
     {
         cout<<"List is Empty\n";
@@ -344,8 +322,8 @@ void CirSinglyLinkedList :: traverse()
     }
 }
 
-//isEmpty() function -> to check the number of Nodes in the Linked List
-int CirSinglyLinkedList :: isEmpty()
+//isEmpty() function
+int CirDoublyLinkedList :: isEmpty()
 {
     if(totalNodes)
     {
@@ -355,15 +333,16 @@ int CirSinglyLinkedList :: isEmpty()
 }
 
 
+
 int main()
 {
-    CirSinglyLinkedList* A = new CirSinglyLinkedList();
+    CirDoublyLinkedList* A = new CirDoublyLinkedList();
     char flag = 'y';
     int choice;
     //menu
     do{
         // system("CLS");
-        cout<<setw(20)<<setfill(' ')<<"CIRCULAR LINKED LIST\n";
+        cout<<setw(20)<<setfill(' ')<<"CIRCULAR DOUBLY LINKED LIST\n";
         cout<<setw(30)<<setfill('-')<<"\n";
         cout<<"List -> ";A->traverse();
         cout<<setw(30)<<setfill('-')<<"\n";
