@@ -1,6 +1,7 @@
 // 13.	WAP to add two polynomials using linked list representation.
 #include <iostream>
 #include <iomanip>
+#include <conio.h>
 using namespace std;
 
 
@@ -120,6 +121,7 @@ public:
         }
         temp = 0;
         totalNodes++;
+
     }
     //delete a term in the selected polynomial
     void deleteTerm()
@@ -167,10 +169,91 @@ public:
             totalNodes--;
             
         }
+        
     }
     //add two polynomial
-    void add()
+    void operator +(PolynomialLinkedList<T>& l)
     {
+        if(totalNodes > 0 && l.totalNodes > 0)
+        {
+                    temp = head;
+        l.temp = l.head;
+        PolynomialLinkedList<T>* tempPoly = new PolynomialLinkedList<T>();
+        tempPoly->temp = new PolynomialNode<T>();
+        if(temp->power > l.temp->power)
+        {
+            tempPoly->temp->power = l.temp->power;
+            tempPoly->temp->cofficient = l.temp->cofficient;
+            tempPoly->head = tempPoly->temp;
+            l.temp = l.temp->nextNode;
+            
+        }
+        else if(temp->power < l.temp->power)
+        {
+            tempPoly->temp->power = temp->power;
+            tempPoly->temp->cofficient = temp->cofficient;
+            tempPoly->head = tempPoly->temp;
+            temp = temp->nextNode;
+        }
+        else if (temp->power == l.temp->power)
+        {
+            tempPoly->temp->power = temp->power + l.temp->power;
+            tempPoly->temp->cofficient = temp->cofficient + l.temp->cofficient;
+            tempPoly->head = tempPoly->temp;
+            temp = temp->nextNode;
+            l.temp = l.temp->nextNode;
+        }
+        tempPoly->temp = tempPoly->head;
+        while(temp != 0 && l.temp != 0)
+        {
+            tempPoly->temp->nextNode = new PolynomialNode<T>();
+            tempPoly->temp = tempPoly->temp->nextNode;
+            if(temp->power == l.temp->power)
+            {
+                tempPoly->temp->power = temp->power + l.temp->power;
+                tempPoly->temp->cofficient = temp->cofficient + l.temp->cofficient;
+                temp = temp->nextNode;
+                l.temp = l.temp->nextNode;
+            }
+            else if(temp->power < l.temp->power)
+            {
+                tempPoly->temp->power = temp->power;
+                tempPoly->temp->cofficient = temp->cofficient;
+                temp = temp->nextNode;
+            }
+            else if(temp->power > l.temp->power)
+            {
+                tempPoly->temp->power = l.temp->power;
+                tempPoly->temp->cofficient = l.temp->cofficient;
+                l.temp = l.temp->nextNode;
+            }
+        }
+        if(temp != 0)
+        {
+            while(temp != 0)
+            {
+                tempPoly->temp->nextNode = new PolynomialNode<T>();
+                tempPoly->temp = tempPoly->temp->nextNode;
+                tempPoly->temp->power = temp->power;
+                tempPoly->temp->cofficient = temp->cofficient;
+                temp = temp->nextNode;                
+            }
+        }
+        else if(l.temp != 0)
+        {
+            while(l.temp != 0)
+            {
+                tempPoly->temp->nextNode = new PolynomialNode<T>();
+                tempPoly->temp = tempPoly->temp->nextNode;
+                tempPoly->temp->power = l.temp->power;
+                tempPoly->temp->cofficient = l.temp->cofficient;
+                l.temp = l.temp->nextNode;
+            }
+        }
+
+        //printing the node
+        tempPoly->print();
+        }
         
     }
 };
@@ -199,7 +282,8 @@ int main()
         cout<<"1. Switch \n"
             <<"2. Insert \n"
             <<"3. Delete \n"
-            <<"13. Exit\n";
+            <<"4. Add\n"
+            <<"5. Exit\n";
         //getting user input
         cout<<"Enter What you want to do ? : ";
         cin>>choice;
@@ -216,12 +300,21 @@ int main()
             case 3:
                 poly->deleteTerm();
                 break;
-            case 13:
+            case 4:
+                cout<<setw(30)<<setfill('-')<<"\n";
+                cout<<"ADDITION : "; *poly_1 + *poly_2;
+                cout<<setw(30)<<setfill('-')<<"\n";
+                cout<<"Press Enter to Continue ";
+                getch();
+                break;
+            case 5:
                 flag = 'n';
                 break;
             default:
                 break;
         }
+        system("CLS");
+
     }
     while(flag == 'y');
     cout<<"\n";
