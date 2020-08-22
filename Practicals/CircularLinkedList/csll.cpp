@@ -9,7 +9,7 @@ class Node
 {
 public:
     //data memebers
-    int data;
+    T data;
     Node* nextNode;
     //constructor
     Node(T data = 0, Node* nextNode = 0)

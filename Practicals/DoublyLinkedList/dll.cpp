@@ -9,7 +9,7 @@ class Node
 {
 public:
     //data members
-    int data;
+    T data;
     Node *nextNode;
     Node *prevNode;
     //constructor
