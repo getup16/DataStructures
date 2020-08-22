@@ -107,7 +107,6 @@ public:
         
     }
 
-
     //delete function
     void deleteNode()
     {
@@ -159,6 +158,81 @@ public:
             
         }
     }
+    //merge function
+    void merge(OrderedLinkedList<T> &A,OrderedLinkedList<T> &B)
+    {
+        //temporary list
+        OrderedLinkedList<T> *tempList = new OrderedLinkedList<T>();
+        if(A.totalNodes > 0 && B.totalNodes > 0)
+        {
+            A.temp = A.head;
+            B.temp = B.head;
+            //setting the head of the temporary list
+            tempList->temp = new Node<T>();
+            tempList->totalNodes++;
+            if(A.temp->data > B.temp->data)
+            {
+                tempList->temp->data = B.head->data;
+                B.temp = B.temp->nextNode;
+            }
+            else if (B.temp->data > A.temp->data)
+            {
+                tempList->temp->data = A.head->data;
+                A.temp = A.temp->nextNode;
+            }
+            else if(A.temp->data == B.temp->data)
+            {
+                tempList->temp->data = A.head->data;
+                A.temp = A.temp->nextNode;
+                B.temp = B.temp->nextNode;
+            }
+            //adding the head of the temporary list
+            tempList->head = tempList->tail =  tempList->temp;
+            while(A.temp != 0 && B.temp != 0)
+            {
+                tempList->temp->nextNode = new Node<T>();
+                tempList->temp = tempList->temp->nextNode;
+                if(A.temp->data > B.temp->data)
+                {
+                    tempList->temp->data = B.temp->data;
+                    B.temp = B.temp->nextNode;
+                }
+                else if(A.temp->data < B.temp->data)
+                {
+                    tempList->temp->data = A.temp->data;
+                    A.temp = A.temp->nextNode;
+                }
+                else if(A.temp->data == B.temp->data)
+                {
+                    tempList->temp->data = A.temp->data;
+                    A.temp = A.temp->nextNode;
+                    B.temp = B.temp->nextNode;
+                }
+            }
+            if(A.temp != 0)
+            {
+                while(A.temp != 0)
+                {
+                    tempList->temp->nextNode = new Node<T>();
+                    tempList->temp = tempList->temp->nextNode;
+                    tempList->temp->data = A.temp->data;
+                    A.temp = A.temp->nextNode;                   
+                }
+            }
+            else if(B.temp != 0)
+            {
+                while(B.temp != 0)
+                {
+                    tempList->temp->nextNode = new Node<T>();
+                    tempList->temp = tempList->temp->nextNode;
+                    tempList->temp->data = B.temp->data;
+                    B.temp = B.temp->nextNode;   
+                }
+            }
+            tempList->traverse();
+            getch();
+        }
+    }
     //traverse function
     void traverse()
     {
@@ -184,7 +258,10 @@ public:
 
 int main()
 {
-    OrderedLinkedList<int>* A = new OrderedLinkedList<int>();
+    OrderedLinkedList<int>* list_1 = new OrderedLinkedList<int>();
+    OrderedLinkedList<int>* list_2 = new OrderedLinkedList<int>();
+    OrderedLinkedList<int>* list = list_1;
+    int currentList = 1;
     int choice;
     char flag = 'y';
     do
@@ -192,28 +269,40 @@ int main()
         cout<<"\n";
         cout<<setw(20)<<setfill(' ')<<"ORDERED LINKED LIST\n";
         cout<<setw(30)<<setfill('-')<<"\n";
-        cout<<"LIST  : "; A->traverse();
+        cout<<"LIST  1: "; list_1->traverse();
+        cout<<"LIST  2: "; list_2->traverse();
+        cout<<setw(30)<<setfill('-')<<"\n";
+        cout<<"CURRENTLY SELECTED - > "<<currentList<<"\n";
         cout<<setw(30)<<setfill('-')<<"\n";
         cout<<"1. Insert \n"
             <<"2. Delete \n"
-            <<"3. Exit\n";
+            <<"3. Merge \n"
+            <<"4. Switch \n"
+            <<"5. Exit\n";
         //getting user input
         cout<<"Enter What you want to do ? : ";
         cin>>choice;
         //switch cases
         switch (choice)
         {
-        case 1:
-            A->insertNode();
-            break;
-        case 2:
-            A->deleteNode();
-            break;
-        case 3:
-            flag = 'n';
-            break;
-        default:
-            break;
+            case 1:
+                list->insertNode();
+                break;
+            case 2:
+                list->deleteNode();
+                break;
+            case 3:
+                list->merge(*list_1,*list_2);
+                break;
+            case 4:
+                currentList = (currentList == 1) ? 2 : 1;
+                list = (list == list_1) ? list_2 : list_1;
+                break; 
+            case 5:
+                flag = 'n';
+                break;
+            default:
+                break;
         }
         system("CLS");
 
